@@ -14,7 +14,18 @@
       {
         devShells = {
           default =
-            pkgs.mkShell { buildInputs = [ pkgs.mill pkgs.nixpkgs-fmt pkgs.scala ]; };
+            pkgs.mkShell {
+              pname = "subscription-cqrs";
+              version = "0.0.1";
+
+              buildInputs = [ pkgs.mill pkgs.nixpkgs-fmt ];
+              buildPhase = ''
+                mill _.compile
+              '';
+              checkPhase = ''
+                nixpkgs-fmt ./flake.nix --check
+              '';
+            };
         };
       });
 }
