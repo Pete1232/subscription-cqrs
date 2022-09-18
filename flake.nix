@@ -10,7 +10,7 @@
         pkgs = import nixpkgs {
           inherit system;
           overlays = [
-            (final: prev: { jre = prev.jdk17_headless; })
+            (final: prev: { jre = prev.jdk11_headless; })
           ];
         };
       in
@@ -21,16 +21,5 @@
               buildInputs = [ pkgs.sbt pkgs.nixpkgs-fmt ];
             };
         };
-
-        defaultPackage =
-          sbt.mkSbtDerivation.${system} {
-            depsSha256 = "Vjkbb73ZglQoGOsv7uNXeuJcf5asySmjTJX3I1eqzsE=";
-
-            pname = "subscription-cqrs";
-            version = "0.0.1";
-            src = self;
-
-            nativeBuildInputs = [ pkgs.nixpkgs-fmt ];
-          };
       });
 }
