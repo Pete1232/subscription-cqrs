@@ -47,7 +47,7 @@
             version = "0.0.1";
             src = gitignoreSource self;
             pkgs = pkgs;
-            depsSha256 = "/eyfWk0fssrcdb2KSEQ5C+YeHNBJ3eId4JzK0ZNMNlU=";
+            depsSha256 = "2TATAfxWnRhu3CKPl8xy+1PMNwAgWi8bNp/aCT/fcYU=";
 
             nativeBuildInputs = [ pkgs.nixpkgs-fmt pkgs.scalafmt ];
 
