@@ -49,10 +49,10 @@
       "inputs": {
         "flake-utils": "flake-utils",
         "nixpkgs": "nixpkgs",
-        "sbt": "sbt"
+        "sbt-derivation": "sbt-derivation"
       }
     },
-    "sbt": {
+    "sbt-derivation": {
       "inputs": {
         "flake-utils": "flake-utils_2",
         "nixpkgs": [

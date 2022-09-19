@@ -21,3 +21,7 @@ nix build
 [nix build phases](https://nixos.org/manual/nixpkgs/stable/#sec-stdenv-phases)
 
 [sbt derivation](https://github.com/zaninime/sbt-derivation)
+
+#### Notes
+
+- Any Nix files need to be staged in Git for them to be picked up

@@ -1,4 +1,6 @@
 .direnv/
 out/
 outputs/
+result*
+result/
 target/
