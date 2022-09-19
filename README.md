@@ -13,6 +13,13 @@ nix develop -i
 To run the full build
 
 ```sh
+nix develop -i
+> genericBuild
+```
+
+or as it runs in CI (make sure to delete all /target directories if running locally, and can still be flaky)
+
+```sh
 nix build
 ```
 
