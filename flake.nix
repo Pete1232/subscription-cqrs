@@ -18,7 +18,7 @@
       {
         devShells.default =
           pkgs.mkShell {
-            buildInputs = [ pkgs.sbt pkgs.nixpkgs-fmt ];
+            buildInputs = [ pkgs.docker pkgs.sbt pkgs.nixpkgs-fmt ];
           };
 
         packages.default =
