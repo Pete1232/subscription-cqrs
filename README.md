@@ -29,6 +29,8 @@ nix build
 
 [sbt derivation](https://github.com/zaninime/sbt-derivation)
 
+[scala walkthrough](https://github.com/gvolpe/sbt-nix.g8#docker-images)
+
 #### Notes
 
 - Any Nix files need to be staged in Git for them to be picked up

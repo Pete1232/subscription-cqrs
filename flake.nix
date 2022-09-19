@@ -23,10 +23,8 @@
         inherit (gitignore.lib) gitignoreSource;
 
         build = ''
-          sbt "core/assembly"
-        '';
-        check = ''
-          nixpkgs-fmt ./flake.nix --check
+          nixpkgs-fmt ./flake.nix --check;
+          sbt ";scalafmtCheckAll;test;core/assembly";
         '';
         install = ''
           mkdir -p $out
@@ -39,7 +37,6 @@
             buildInputs = [ pkgs.docker pkgs.git pkgs.sbt pkgs.nixpkgs-fmt ];
 
             buildPhase = build;
-            checkPhase = check;
             installPhase = install;
           };
 
@@ -54,7 +51,6 @@
             nativeBuildInputs = [ pkgs.nixpkgs-fmt ];
 
             buildPhase = build;
-            checkPhase = check;
             installPhase = install;
           };
       });
