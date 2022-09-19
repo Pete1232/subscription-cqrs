@@ -24,7 +24,8 @@
 
         build = ''
           nixpkgs-fmt ./flake.nix --check;
-          sbt ";scalafmtCheckAll;test;core/assembly";
+          scalafmt --exclude project/metals.sbt --exclude .metals --exclude target --test
+          sbt ";test;core/assembly";
         '';
         install = ''
           mkdir -p $out
@@ -34,7 +35,7 @@
       {
         devShells.default =
           pkgs.mkShell {
-            buildInputs = [ pkgs.docker pkgs.git pkgs.sbt pkgs.nixpkgs-fmt ];
+            buildInputs = [ pkgs.sbt pkgs.nixpkgs-fmt pkgs.scalafmt ];
 
             buildPhase = build;
             installPhase = install;
@@ -48,7 +49,7 @@
             pkgs = pkgs;
             depsSha256 = "/eyfWk0fssrcdb2KSEQ5C+YeHNBJ3eId4JzK0ZNMNlU=";
 
-            nativeBuildInputs = [ pkgs.nixpkgs-fmt ];
+            nativeBuildInputs = [ pkgs.nixpkgs-fmt pkgs.scalafmt ];
 
             buildPhase = build;
             installPhase = install;
