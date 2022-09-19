@@ -25,3 +25,4 @@ nix build
 #### Notes
 
 - Any Nix files need to be staged in Git for them to be picked up
+- [nix develop --build and phases confusion](https://github.com/NixOS/nix/issues/6202)

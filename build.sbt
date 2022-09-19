@@ -24,8 +24,6 @@ lazy val root = (project in file("."))
   .aggregate(core)
 
 lazy val core = (project in file("core"))
-  .enablePlugins(JavaAppPackaging)
-  .enablePlugins(DockerPlugin)
   .settings(
     name := s"${projectName}-core"
   )

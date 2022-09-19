@@ -11,4 +11,4 @@ jobs:
         with:
           nix_path: nixpkgs=channel:nixos-unstable
       - run: nix flake check
-      - run: nix develop -i --check
+      - run: nix build
