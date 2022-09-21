@@ -22,6 +22,7 @@
         };
         inherit (gitignore.lib) gitignoreSource;
 
+        version = "0.0.1"; # TODO use jar version? or just a variable
         build = ''
           nixpkgs-fmt ./flake.nix --check;
           scalafmt --exclude project/metals.sbt --exclude .metals --exclude target --test
@@ -31,6 +32,19 @@
           mkdir -p $out
           cp core/target/scala-*/*-assembly-*.jar $out
         '';
+
+        core = sbt-derivation.lib.mkSbtDerivation {
+          pname = "subscription-cqrs";
+          version = version;
+          src = gitignoreSource self;
+          pkgs = pkgs;
+          depsSha256 = "2TATAfxWnRhu3CKPl8xy+1PMNwAgWi8bNp/aCT/fcYU=";
+
+          nativeBuildInputs = [ pkgs.nixpkgs-fmt pkgs.scalafmt ];
+
+          buildPhase = build;
+          installPhase = install;
+        };
       in
       {
         devShells.default =
@@ -42,17 +56,14 @@
           };
 
         packages.default =
-          sbt-derivation.lib.mkSbtDerivation {
-            pname = "subscription-cqrs";
-            version = "0.0.1";
-            src = gitignoreSource self;
-            pkgs = pkgs;
-            depsSha256 = "2TATAfxWnRhu3CKPl8xy+1PMNwAgWi8bNp/aCT/fcYU=";
+          pkgs.dockerTools.buildImage {
+            name = core.pname;
+            tag = core.version;
+            copyToRoot = [ core pkgs.adoptopenjdk-jre-openj9-bin-11 ];
 
-            nativeBuildInputs = [ pkgs.nixpkgs-fmt pkgs.scalafmt ];
-
-            buildPhase = build;
-            installPhase = install;
+            config = {
+              Cmd = [ "java" "-jar" "subscription-cqrs-assembly-core.jar" ];
+            };
           };
       });
 }

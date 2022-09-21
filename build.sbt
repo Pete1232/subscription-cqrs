@@ -25,6 +25,7 @@ lazy val root = (project in file("."))
 
 lazy val core = (project in file("core"))
   .settings(
-    name := s"${projectName}-core"
+    name := s"${projectName}-core",
+    assembly / assemblyJarName := s"${projectName}-assembly-core.jar"
   )
   .settings(sharedSettings)
