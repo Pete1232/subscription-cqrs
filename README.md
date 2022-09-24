@@ -26,9 +26,9 @@ nix build --json
 OUT=$(nix build --json | jq -r ".[] | .outputs.out")
 
 docker load -i $OUT
-# Loaded image: subscription-cqrs:0.0.1
+# Loaded image: subscription-cqrs:latest
 
-docker run subscription-cqrs:0.0.1
+docker run subscription-cqrs:latest
 ```
 
 [nix development environment](https://nixos.wiki/wiki/Development_environment_with_nix-shell)

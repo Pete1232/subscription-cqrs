@@ -11,59 +11,64 @@
   };
 
   outputs = { self, nixpkgs, flake-utils, sbt-derivation, gitignore }:
-    flake-utils.lib.eachDefaultSystem (system:
-      let
-        pkgs = import nixpkgs {
-          inherit system;
-          overlays = [
-            (final: prev: { jre = prev.jdk11_headless; })
-            (final: prev: { sbt = prev.sbt.override { jre = prev.jdk11_headless; }; })
-          ];
-        };
-        inherit (gitignore.lib) gitignoreSource;
+    flake-utils.lib.eachSystem
+      ([
+        flake-utils.lib.system.aarch64-linux
+        flake-utils.lib.system.x86_64-darwin
+        flake-utils.lib.system.x86_64-linux
+      ])
+      (system:
+        let
+          pkgs = import nixpkgs {
+            inherit system;
+            overlays = [
+              (final: prev: { jre = prev.jdk11_headless; })
+              (final: prev: { sbt = prev.sbt.override { jre = prev.jdk11_headless; }; })
+            ];
+          };
+          inherit (gitignore.lib) gitignoreSource;
 
-        version = "0.0.1"; # TODO use jar version? or just a variable
-        build = ''
-          nixpkgs-fmt ./flake.nix --check;
-          scalafmt --exclude project/metals.sbt --exclude .metals --exclude target --test
-          sbt ";test;core/assembly";
-        '';
-        install = ''
-          mkdir -p $out
-          cp core/target/scala-*/*-assembly-*.jar $out
-        '';
+          build = ''
+            nixpkgs-fmt ./flake.nix --check;
+            scalafmt --exclude project/metals.sbt --exclude .metals --exclude target --test
+            sbt ";test;core/assembly";
+          '';
+          install = ''
+            mkdir -p $out
+            cp core/target/scala-*/*-assembly-*.jar $out
+          '';
 
-        core = sbt-derivation.lib.mkSbtDerivation {
-          pname = "subscription-cqrs";
-          version = version;
-          src = gitignoreSource self;
-          pkgs = pkgs;
-          depsSha256 = "wq/R6AUrWP3ZUtTefbMXSfJA7R2bTHZLy9Pfj8lG3vM=";
+          core = sbt-derivation.lib.mkSbtDerivation {
+            pname = "subscription-cqrs";
+            version = "latest";
+            src = gitignoreSource self;
+            pkgs = pkgs;
+            depsSha256 = "wq/R6AUrWP3ZUtTefbMXSfJA7R2bTHZLy9Pfj8lG3vM=";
 
-          nativeBuildInputs = [ pkgs.nixpkgs-fmt pkgs.scalafmt ];
-
-          buildPhase = build;
-          installPhase = install;
-        };
-      in
-      {
-        devShells.default =
-          pkgs.mkShell {
-            buildInputs = [ pkgs.sbt pkgs.nixpkgs-fmt pkgs.scalafmt ];
+            nativeBuildInputs = [ pkgs.nixpkgs-fmt pkgs.scalafmt ];
 
             buildPhase = build;
             installPhase = install;
           };
+        in
+        {
+          devShells.default =
+            pkgs.mkShell {
+              buildInputs = [ pkgs.sbt pkgs.nixpkgs-fmt pkgs.scalafmt ];
 
-        packages.default =
-          pkgs.dockerTools.buildImage {
-            name = core.pname;
-            tag = core.version;
-            copyToRoot = [ core pkgs.adoptopenjdk-jre-openj9-bin-11 ];
-
-            config = {
-              Cmd = [ "java" "-jar" "subscription-cqrs-assembly-core.jar" ];
+              buildPhase = build;
+              installPhase = install;
             };
-          };
-      });
+
+          packages.default =
+            pkgs.dockerTools.buildImage {
+              name = core.pname;
+              tag = core.version;
+              copyToRoot = [ core pkgs.adoptopenjdk-jre-openj9-bin-11 ];
+
+              config = {
+                Cmd = [ "java" "-jar" "subscription-cqrs-assembly-core.jar" ];
+              };
+            };
+        });
 }
