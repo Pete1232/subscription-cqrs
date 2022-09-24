@@ -12,6 +12,7 @@
       "original": {
         "owner": "numtide",
         "repo": "flake-utils",
+        "rev": "c0e246b9b83f637f4681389ecabcb2681b4f3af0",
         "type": "github"
       }
     },
@@ -47,6 +48,7 @@
       "original": {
         "owner": "hercules-ci",
         "repo": "gitignore.nix",
+        "rev": "a20de23b925fd8264fd7fad6454652e142fd7f73",
         "type": "github"
       }
     },
@@ -92,6 +94,7 @@
       "original": {
         "owner": "zaninime",
         "repo": "sbt-derivation",
+        "rev": "fe0044d2cd351f4d6257956cde3a2ef633d33616",
         "type": "github"
       }
     }

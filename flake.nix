@@ -1,12 +1,12 @@
 {
   inputs.nixpkgs.url = "github:nixos/nixpkgs/nixos-22.05";
-  inputs.flake-utils.url = "github:numtide/flake-utils";
+  inputs.flake-utils.url = "github:numtide/flake-utils/c0e246b9b83f637f4681389ecabcb2681b4f3af0";
   inputs.sbt-derivation = {
-    url = "github:zaninime/sbt-derivation";
+    url = "github:zaninime/sbt-derivation/fe0044d2cd351f4d6257956cde3a2ef633d33616";
     inputs.nixpkgs.follows = "nixpkgs";
   };
   inputs.gitignore = {
-    url = "github:hercules-ci/gitignore.nix";
+    url = "github:hercules-ci/gitignore.nix/a20de23b925fd8264fd7fad6454652e142fd7f73";
     inputs.nixpkgs.follows = "nixpkgs";
   };
 
