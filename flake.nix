@@ -1,5 +1,5 @@
 {
-  inputs.nixpkgs.url = "github:nixos/nixpkgs";
+  inputs.nixpkgs.url = "github:nixos/nixpkgs/nixos-22.05";
   inputs.flake-utils.url = "github:numtide/flake-utils";
   inputs.sbt-derivation = {
     url = "github:zaninime/sbt-derivation";
@@ -67,7 +67,7 @@
             pkgs.dockerTools.buildImage {
               name = core.pname;
               tag = core.version;
-              copyToRoot = [ core pkgs.adoptopenjdk-jre-openj9-bin-11 ];
+              contents = [ core pkgs.adoptopenjdk-jre-openj9-bin-11 ];
 
               config = {
                 Cmd = [ "java" "-jar" "subscription-cqrs-assembly-core.jar" ];
