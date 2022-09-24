@@ -26,8 +26,8 @@
           pkgs = import nixpkgs {
             inherit system;
             overlays = [
-              (final: prev: { jre = prev.jdk11_headless; })
-              (final: prev: { sbt = prev.sbt.override { jre = prev.jdk11_headless; }; })
+              (final: prev: { jre = prev.jdk17_headless; })
+              (final: prev: { sbt = prev.sbt.override { jre = prev.jdk17_headless; }; })
             ];
           };
 
@@ -67,7 +67,7 @@
             pkgs.dockerTools.buildImage {
               name = core.pname;
               tag = core.version;
-              contents = [ core pkgs.adoptopenjdk-jre-openj9-bin-11 ];
+              contents = [ core pkgs.jre_minimal ];
 
               config = {
                 Cmd = [ "java" "-jar" "subscription-cqrs-assembly-core.jar" ];
