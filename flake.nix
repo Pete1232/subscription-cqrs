@@ -11,11 +11,15 @@
   };
 
   outputs = { self, nixpkgs, flake-utils, sbt-derivation, gitignore }:
-    flake-utils.lib.eachSystem
+    let
+      inherit (flake-utils.lib) eachSystem system;
+      inherit (gitignore.lib) gitignoreSource;
+    in
+    eachSystem
       ([
-        flake-utils.lib.system.aarch64-linux
-        flake-utils.lib.system.x86_64-darwin
-        flake-utils.lib.system.x86_64-linux
+        system.aarch64-linux
+        system.x86_64-darwin
+        system.x86_64-linux
       ])
       (system:
         let
@@ -26,7 +30,6 @@
               (final: prev: { sbt = prev.sbt.override { jre = prev.jdk11_headless; }; })
             ];
           };
-          inherit (gitignore.lib) gitignoreSource;
 
           build = ''
             nixpkgs-fmt ./flake.nix --check;
