@@ -1,7 +1,10 @@
 name: Create and publish a Docker image
 on:
+  release:
+    types: [published]
   push:
-    branches: ["release"]
+    branches:
+      - "2-publish-artifacts"
 env:
   REGISTRY: ghcr.io
   IMAGE_NAME: ${{ github.repository }}
