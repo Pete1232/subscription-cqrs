@@ -1,6 +1,6 @@
 name: "Test and Build"
 on:
-  pull_request:
+  # pull_request:
   push:
     branches:
       - 'main'
@@ -22,4 +22,4 @@ jobs:
       - name: Check flake
         run: nix flake check
       - name: Test, Compile and Assemble
-        run: nix build --json
+        run: nix build --json | jq -r '.[].outputs | to_entries[].value'
