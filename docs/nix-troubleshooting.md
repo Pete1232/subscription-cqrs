@@ -12,6 +12,8 @@ Any Nix files need to be staged in Git for them to be picked up
 
 [nix develop --build and phases confusion](https://github.com/NixOS/nix/issues/6202)
 
+[cachix](https://app.cachix.org/cache/pete1232)
+
 The scalafmt config version must match the installed version. If not it will have to download config and will fail.
 
 ```text
