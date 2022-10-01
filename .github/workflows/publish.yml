@@ -53,5 +53,7 @@ jobs:
         uses: docker/metadata-action@98669ae865ea3cffbcbaa878cf57c20bbf1c6c38
         with:
           images: ${{ env.REGISTRY }}/subscription-cqrs # this should come from the load
+      - name: Docker tag
+        run: docker tag subscription-cqrs:latest ${{ steps.meta.outputs.tags }}
       - name: Docker push
-        run: echo "${{ steps.meta.outputs.tags }} ${{ steps.meta.outputs.labels }}"
+        run: docker push ${{ steps.meta.outputs.tags }}
