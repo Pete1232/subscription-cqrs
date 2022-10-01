@@ -52,7 +52,7 @@ jobs:
         id: meta
         uses: docker/metadata-action@98669ae865ea3cffbcbaa878cf57c20bbf1c6c38
         with:
-          images: pete1232/subscription-cqrs # this should come from the load
+          images: ${{ env.REGISTRY }}/pete1232/subscription-cqrs # name should come from the load, is username an env var too?
       - name: Docker tag
         run: docker tag subscription-cqrs:latest ${{ steps.meta.outputs.tags }}
       - name: Docker push
