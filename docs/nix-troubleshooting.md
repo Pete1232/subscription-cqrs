@@ -176,3 +176,23 @@ And finally, cache sources for re-use. They are numerous but don't take much spa
 ```text
 (.*docker.*$|.*subscription-cqrs-latest$|.*runtime-deps$|.*extract-dependencies$|.*config.json$)
 ```
+
+After all this:
+
+```text
+
+Cachix: push
+  /home/runner/work/_actions/cachix/cachix-action/v10/dist/main/push-paths.sh /home/runner/.nix-profile/bin/cachix pete1232 (.*docker.*$|.*subscription-cqrs-latest$|.*runtime-deps$|.*extract-dependencies$|.*config.json$)
+  compressing and pushing /nix/store/5s01h4cmhpswl7sg3rslazwgw6nzd1gg-source (10.68 KiB)
+  compressing and pushing /nix/store/i7hfp6crdfhdjy9wgrdzqqmi0mad7ag7-source (23.98 KiB)
+  compressing and pushing /nix/store/6l0wninl4kkcg7aid41x9l36xr7f3snf-scalafmt-3.4.3 (3.91 KiB)
+  compressing and pushing /nix/store/gagkdxcrj0pzdd4xpqyga9xc2yqj8j0y-source (38.34 KiB)
+  compressing and pushing /nix/store/d2ram0dar3wayqkricw4smq9zp5nwkfc-sbt-1.6.2 (50.71 MiB)
+  compressing and pushing /nix/store/nbkbs33bkw54f60kv5c5y48714l00dpw-source (24.79 KiB)
+  compressing and pushing /nix/store/qjw6nq34h4s78573nh70gsl2a2qz76mz-source (51.09 KiB)
+  compressing and pushing /nix/store/sbqmyyaqyk5s4zmnjznxbijhidpji211-subscription-cqrs-sbt-dependencies.tar.zst (81.83 MiB)
+  compressing and pushing /nix/store/xhfy6pf3jc023jda49x5w7vngcwcjlw5-source (16.15 KiB)
+  compressing and pushing /nix/store/zj0z258z5zqcc74nbn23kfz5x12rx6hn-source (7.68 KiB)
+```
+
+Not sure why but the sources appear several times in the UI. Other than that all seems good!
