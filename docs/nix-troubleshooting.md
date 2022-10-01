@@ -64,3 +64,103 @@ If any of:
 - project dependencies
 
 are updated then the sha-256 will need to be updated. The build derivation should be cached so it doesn't need to be rebuilt as often.
+
+## Cachix debugging
+
+[test build](https://github.com/Pete1232/subscription-cqrs/actions/runs/3165661727), will eventually be deleted
+
+Initial build 4m20s
+
+Re-running an identical build outputs the following:
+
+```text
+ this path will be fetched (196.28 MiB download, 198.59 MiB unpacked):
+  /nix/store/klpcqjmd184slrli4xhc020cmzmpjdkk-docker-image-subscription-cqrs.tar.gz
+copying path '/nix/store/klpcqjmd184slrli4xhc020cmzmpjdkk-docker-image-subscription-cqrs.tar.gz' from 'https://pete1232.cachix.org'...
+```
+
+Finished in 35s
+
+No point caching that though - it won't be common to re-build the exact same derivation. Deleting the completed image in the cache logs this instead:
+
+```text
+ this path will be fetched (196.28 MiB download, 198.59 MiB unpacked):
+  /nix/store/klpcqjmd184slrli4xhc020cmzmpjdkk-docker-image-subscription-cqrs.tar.gz
+copying path '/nix/store/klpcqjmd184slrli4xhc020cmzmpjdkk-docker-image-subscription-cqrs.tar.gz' from 'https://pete1232.cachix.org'...
+```
+
+Finished in 1m29s
+
+Same issue. This docker image is going to change every time, so no point caching
+
+Making a code change to see what needs to be re-generated.
+
+Before:
+
+```text
+/nix/store/klpcqjmd184slrli4xhc020cmzmpjdkk-docker-image-subscription-cqrs.tar.gz 196.27 MiB 198.58 MiB 2022-10-01T18:32:08.780Z 
+/nix/store/sbqmyyaqyk5s4zmnjznxbijhidpji211-subscription-cqrs-sbt-dependencies.tar.zst 80.72 MiB 81.82 MiB 2022-10-01T17:59:11.017Z 
+/nix/store/7w25gp6695hdrjndixgysdpchvy7gymb-docker-layer-subscription-cqrs 17.64 MiB 51.07 MiB 2022-10-01T18:22:58.871Z 
+/nix/store/d2ram0dar3wayqkricw4smq9zp5nwkfc-sbt-1.6.2 15.98 MiB 50.7 MiB 2022-10-01T18:26:16.703Z 
+/nix/store/g15mknl2gj2fbimh6wj54sh5yv19crlr-subscription-cqrs-latest 5.28 MiB 5.71 MiB never 
+/nix/store/bsaji0zhqa37l91x85rkqa78v7jv1vcl-runtime-deps 5.22 KiB 9.17 KiB never 
+/nix/store/6l0wninl4kkcg7aid41x9l36xr7f3snf-scalafmt-3.4.3 748 B 3.91 KiB 2022-10-01T18:26:16.706Z 
+/nix/store/w5wzqrd1x1zpk5486i5yxy86r27faq9r-extract-dependencies 672 B 912 B never 
+/nix/store/j55gbrx5wjhqd5205999n7zn4qaqlwqz-subscription-cqrs-config.json 252 B 256 B never
+```
+
+Logs, show what was re-used:
+
+```text
+copying path '/nix/store/sbqmyyaqyk5s4zmnjznxbijhidpji211-subscription-cqrs-sbt-dependencies.tar.zst' from 'https://pete1232.cachix.org'...
+...
+copying path '/nix/store/d2ram0dar3wayqkricw4smq9zp5nwkfc-sbt-1.6.2' from 'https://pete1232.cachix.org'...
+copying path '/nix/store/6l0wninl4kkcg7aid41x9l36xr7f3snf-scalafmt-3.4.3' from 'https://pete1232.cachix.org'...
+```
+
+After:
+
+```text
+/nix/store/klpcqjmd184slrli4xhc020cmzmpjdkk-docker-image-subscription-cqrs.tar.gz 196.27 MiB 198.58 MiB 2022-10-01T18:32:08.780Z 
+/nix/store/yvfnpimk2bcfbp51pw1a2h0n5j3a1v23-docker-image-subscription-cqrs.tar.gz 196.27 MiB 198.58 MiB never 
+/nix/store/sbqmyyaqyk5s4zmnjznxbijhidpji211-subscription-cqrs-sbt-dependencies.tar.zst 80.72 MiB 81.82 MiB 2022-10-01T18:40:43.087Z 
+/nix/store/mg0g8pzly1vzkv3lsd1p49livglx374b-docker-layer-subscription-cqrs 17.64 MiB 51.07 MiB never 
+/nix/store/7w25gp6695hdrjndixgysdpchvy7gymb-docker-layer-subscription-cqrs 17.64 MiB 51.07 MiB 2022-10-01T18:22:58.871Z 
+/nix/store/d2ram0dar3wayqkricw4smq9zp5nwkfc-sbt-1.6.2 15.98 MiB 50.7 MiB 2022-10-01T18:40:43.092Z 
+/nix/store/3l5p18p1dcf0rg67hi6fbcfzlasdjiyv-subscription-cqrs-latest 5.28 MiB 5.71 MiB never 
+/nix/store/g15mknl2gj2fbimh6wj54sh5yv19crlr-subscription-cqrs-latest 5.28 MiB 5.71 MiB never 
+/nix/store/1gxir0rvy5nc5f3x8zxh1svwfjyl2y65-runtime-deps 5.22 KiB 9.17 KiB never 
+/nix/store/bsaji0zhqa37l91x85rkqa78v7jv1vcl-runtime-deps 5.22 KiB 9.17 KiB never 
+/nix/store/6l0wninl4kkcg7aid41x9l36xr7f3snf-scalafmt-3.4.3 748 B 3.91 KiB 2022-10-01T18:40:43.128Z 
+/nix/store/w5wzqrd1x1zpk5486i5yxy86r27faq9r-extract-dependencies 672 B 912 B never 
+/nix/store/j55gbrx5wjhqd5205999n7zn4qaqlwqz-subscription-cqrs-config.json 252 B 256 B never
+```
+
+So TL;DR is that the `sbt-dependencies` derivation _is_ definitely re-used as long as the dependencies are unchanged, and is therefore worth caching.
+
+The docker layers and images are _not_ reused if the code changes.
+
+Don't cache:
+
+```text
+/nix/store/klpcqjmd184slrli4xhc020cmzmpjdkk-docker-image-subscription-cqrs.tar.gz
+/nix/store/7w25gp6695hdrjndixgysdpchvy7gymb-docker-layer-subscription-cqrs
+/nix/store/g15mknl2gj2fbimh6wj54sh5yv19crlr-subscription-cqrs-latest
+/nix/store/bsaji0zhqa37l91x85rkqa78v7jv1vcl-runtime-deps
+```
+
+Cache:
+
+```text
+/nix/store/sbqmyyaqyk5s4zmnjznxbijhidpji211-subscription-cqrs-sbt-dependencies.tar.zst
+/nix/store/d2ram0dar3wayqkricw4smq9zp5nwkfc-sbt-1.6.2
+/nix/store/6l0wninl4kkcg7aid41x9l36xr7f3snf-scalafmt-3.4.3
+/nix/store/w5wzqrd1x1zpk5486i5yxy86r27faq9r-extract-dependencies
+/nix/store/j55gbrx5wjhqd5205999n7zn4qaqlwqz-subscription-cqrs-config.json
+```
+
+`pushFilter` Regex:
+
+```text
+(-source$|.*docker.*$|.*subscription-cqrs-latest$|.*runtime-deps$)
+```

@@ -28,9 +28,9 @@ jobs:
           authToken: "${{ secrets.CACHIX_AUTH_TOKEN }}"
           # Regular expression to exclude derivations for the cache push, for example "(-source$|nixpkgs\.tar\.gz$)".
           # Warning: this filter does not guarantee it will not get pushed in case the path is part of the closure of something that will get pushed.
-          # filter out: sources, project files, sbt-dependencies (which includes source files), docker-layers (also changes with each source update)
-          # this will leave: caches of the tagged versions of public repositories, the sbt derivation
-          pushFilter: (-source$) # |.*docker.*$|.*sbt-dependencies.*|.*subscription-cqrs.*$)
+          # filter out: sources files, docker-layers (which will change with each source update
+          # this will leave: caches of the tagged versions of public repositories, sbt-dependencies which will only change on build updates
+          pushFilter: (-source$|.*docker.*$|.*subscription-cqrs-latest$|.*runtime-deps$)
       - name: Check flake
         run: nix flake check
       - id: build_step
