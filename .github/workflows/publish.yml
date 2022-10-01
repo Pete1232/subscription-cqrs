@@ -49,7 +49,7 @@ jobs:
           username: ${{ github.actor }}
           password: ${{ secrets.GITHUB_TOKEN }}
       - name: Docker Load
-        run: docker load ${{ steps.build_step.outputs.build_id }}
+        run: docker load -i ${{ steps.build_step.outputs.build_id }}
   publish:
     needs: build
     runs-on: ubuntu-latest
