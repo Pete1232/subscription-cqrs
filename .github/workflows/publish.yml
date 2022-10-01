@@ -29,7 +29,7 @@ jobs:
           # Regular expression to exclude derivations for the cache push, for example "(-source$|nixpkgs\.tar\.gz$)".
           # Warning: this filter does not guarantee it will not get pushed in case the path is part of the closure of something that will get pushed.
           # 
-          pushFilter: (-source$|.*docker-image.*\.tar\.gz$|.*sbt-dependencies.*\.tar\.zst$)
+          pushFilter: (-source$|.*docker.*$|.*sbt-dependencies.*$)
       - name: Check flake
         run: nix flake check
       - id: build_step
