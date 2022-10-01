@@ -30,7 +30,7 @@ jobs:
           # Warning: this filter does not guarantee it will not get pushed in case the path is part of the closure of something that will get pushed.
           # filter out: sources, project files, sbt-dependencies (which includes source files), docker-layers (also changes with each source update)
           # this will leave: caches of the tagged versions of public repositories, the sbt derivation
-          pushFilter: (-source$|.*docker.*$|.*sbt-dependencies.*|.*subscription-cqrs.*$)
+          pushFilter: (-source$) # |.*docker.*$|.*sbt-dependencies.*|.*subscription-cqrs.*$)
       - name: Check flake
         run: nix flake check
       - id: build_step
