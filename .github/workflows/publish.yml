@@ -2,6 +2,9 @@ name: Test, Build and Publish a Docker image
 on:
   release:
     types: [ published ]
+  push:
+    branches:
+      - "2-publish-artifacts"
 env:
   REGISTRY: ghcr.io
   IMAGE_NAME: ${{ github.repository }}
@@ -11,6 +14,8 @@ jobs:
     permissions:
       contents: read
       packages: write
+    outputs:
+      build_id: ${{ steps.build_step.outputs.build_id }}
     steps:
       - name: Checkout repository
         uses: actions/checkout@v3
@@ -32,13 +37,24 @@ jobs:
         run: nix flake check
       - id: build_step
         name: Test, Compile and Assemble
-        run: echo "::set-output name=build_id::$(nix build --json | jq -r '.[].outputs | to_entries[].value')::"
+        run: echo "::set-output name=build_id::$(nix build --json | jq -r '.[].outputs | to_entries[].value')"
+      - name: Try to log
+        run: echo "${{ steps.build_step.outputs.build_id }}"
       - name: Log in to the Container registry
         uses: docker/login-action@f054a8b539a109f9f41c372932f1ae047eff08c9
         with:
           registry: ${{ env.REGISTRY }}
           username: ${{ github.actor }}
           password: ${{ secrets.GITHUB_TOKEN }}
+  publish:
+    needs: build
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      packages: write
+    steps:
+      - name: Try to log
+        run: echo "${{ jobs.build.outputs.build_id }}"
       # - name: Upload image
       #   uses: actions/upload-artifact@v3
       #   with:
