@@ -1,7 +1,7 @@
 name: Test, Build and Publish a Docker image
 on:
   release:
-    types: [ published ]
+    types: [published]
   push:
     branches:
       - "2-publish-artifacts-3"
@@ -14,8 +14,6 @@ jobs:
     permissions:
       contents: read
       packages: write
-    outputs:
-      build_id: ${{ steps.build_step.outputs.build_id }}
     steps:
       - name: Checkout repository
         uses: actions/checkout@v3
@@ -35,13 +33,13 @@ jobs:
           pushFilter: (.*docker.*$|.*subscription-cqrs-latest$|.*runtime-deps$|.*extract-dependencies$|.*config.json$)
       - name: Check flake
         run: nix flake check
-      - id: build_step
-        name: Test, Compile and Assemble
+      - name: Test, Compile and Assemble
+        id: build
         run: echo "::set-output name=build_id::$(nix build --json | jq -r '.[].outputs | to_entries[].value')"
       - name: Try to log
-        run: echo "${{ steps.build_step.outputs.build_id }}"
+        run: echo "${{ steps.build.outputs.build_id }}"
       - name: Try to find
-        run: echo "$([[ -e ${{ steps.build_step.outputs.build_id }} ]] && echo "File exist" || echo "File not found")"
+        run: echo "$([[ -e ${{ steps.build.outputs.build_id }} ]] && echo "File exist" || echo "File not found")"
       - name: Log in to the Container registry
         uses: docker/login-action@f054a8b539a109f9f41c372932f1ae047eff08c9
         with:
@@ -49,32 +47,11 @@ jobs:
           username: ${{ github.actor }}
           password: ${{ secrets.GITHUB_TOKEN }}
       - name: Docker Load
-        run: docker load -i ${{ steps.build_step.outputs.build_id }}
-  publish:
-    needs: build
-    runs-on: ubuntu-latest
-    permissions:
-      contents: read
-      packages: write
-    steps:
-      - name: Try to log
-        run: echo "${{ needs.build.outputs.build_id }}"
-      - name: Try to find
-        run: echo "$([[ -e ${{ needs.build.outputs.build_id }} ]] && echo "File exist" || echo "File not found")"
-      # - name: Upload image
-      #   uses: actions/upload-artifact@v3
-      #   with:
-      #     name: my-artifact
-      #     path: /nix/store/*-docker-image-subscription-cqrs.tar.gz 
-      # - name: Extract metadata (tags, labels) for Docker
-      #   id: meta
-      #   uses: docker/metadata-action@98669ae865ea3cffbcbaa878cf57c20bbf1c6c38
-      #   with:
-      #     images: ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}
-      # - name: Build and push Docker image
-      #   uses: docker/build-push-action@ad44023a93711e3deb337508980b4b5e9bcdc5dc
-      #   with:
-      #     context: .
-      #     push: true
-      #     tags: ${{ steps.meta.outputs.tags }}
-      #     labels: ${{ steps.meta.outputs.labels }}
+        run: docker load -i ${{ steps.build.outputs.build_id }}
+      - name: Extract metadata (tags, labels) for Docker
+        id: meta
+        uses: docker/metadata-action@98669ae865ea3cffbcbaa878cf57c20bbf1c6c38
+        with:
+          images: ${{ env.REGISTRY }}/subscription-cqrs # this should come from the load
+      - name: Docker push
+        run: echo "${{ steps.meta.outputs.tags }} ${{ steps.meta.outputs.labels }}"
