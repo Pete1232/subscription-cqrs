@@ -4,7 +4,7 @@ on:
     types: [ published ]
   push:
     branches:
-      - "2-publish-artifacts"
+      - "2-publish-artifacts-3"
 env:
   REGISTRY: ghcr.io
   IMAGE_NAME: ${{ github.repository }}
