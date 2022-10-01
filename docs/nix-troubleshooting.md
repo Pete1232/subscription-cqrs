@@ -170,3 +170,9 @@ But... the last two aren't pushed each time - but also aren't used. So lets not 
 ```text
 (-source$|.*docker.*$|.*subscription-cqrs-latest$|.*runtime-deps$|.*extract-dependencies$|.*config.json$)
 ```
+
+And finally, cache sources for re-use. They are numerous but don't take much space, and will mean the build doesn't need to rely on external dependencies at all.
+
+```text
+(.*docker.*$|.*subscription-cqrs-latest$|.*runtime-deps$|.*extract-dependencies$|.*config.json$)
+```
