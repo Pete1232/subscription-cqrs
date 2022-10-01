@@ -54,7 +54,7 @@ jobs:
       packages: write
     steps:
       - name: Try to log
-        run: echo "${{ jobs.build.outputs.build_id }}"
+        run: echo "${{ needs.build.outputs.build_id }}"
       # - name: Upload image
       #   uses: actions/upload-artifact@v3
       #   with:
