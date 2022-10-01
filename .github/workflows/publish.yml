@@ -30,7 +30,7 @@ jobs:
           # Warning: this filter does not guarantee it will not get pushed in case the path is part of the closure of something that will get pushed.
           # filter out: sources files, docker-layers (which will change with each source update
           # this will leave: caches of the tagged versions of public repositories, sbt-dependencies which will only change on build updates
-          pushFilter: (-source$|.*docker.*$|.*subscription-cqrs-latest$|.*runtime-deps$)
+          pushFilter: (-source$|.*docker.*$|.*subscription-cqrs-latest$|.*runtime-deps$|.*extract-dependencies$|.*config.json$)
       - name: Check flake
         run: nix flake check
       - id: build_step

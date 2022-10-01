@@ -164,3 +164,9 @@ Cache:
 ```text
 (-source$|.*docker.*$|.*subscription-cqrs-latest$|.*runtime-deps$)
 ```
+
+But... the last two aren't pushed each time - but also aren't used. So lets not cache those either.
+
+```text
+(-source$|.*docker.*$|.*subscription-cqrs-latest$|.*runtime-deps$|.*extract-dependencies$|.*config.json$)
+```
